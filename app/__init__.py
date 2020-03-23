@@ -1,12 +1,12 @@
 import simpy
 
-from .tuto import car
+from .tuto import Car
 
 
 def create_env():
     """
     """
     env = simpy.Environment()
-    env.process(car(env))
+    car = Car(env)
 
     return env
