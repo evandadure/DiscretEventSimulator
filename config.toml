@@ -1,0 +1,113 @@
+# FILE INFORMATIONS
+title = "TOML config file"
+author = "Clement DECOOPMAN"
+
+
+# PROJECT
+[project]
+name = "Virus propagation simulator"
+description = "Simulate a virus propagation by using discrete events"
+version = "1.0"
+updated = "14/04/2020"
+
+    [[project.authors]]
+    name = "Clement DECOOPMAN"
+    email = "clemdecoop.dev@gmail.com"
+
+    [[project.authors]]
+    name = "Evan Dadure"
+    email = "evandadure@gmail.com"
+
+
+# SIMULATION ENVIRONMENT
+[environment]
+nb_cycle = 1            # number of cycles int the simulation
+duration = 1344         # period of each cycle in hours
+confinement = false     # enable confinement (true / false)
+nb_masks = 625          # base amount of masks available in each container/store
+
+    # Virus
+    [environment.virus]
+    name = "COVID-19"
+    infectivity = 1             # base probability of getting infected
+    incubation = 336            # period in hours between infection and first appearance of symptoms
+    infect_incr = false         # infection increased during incubation period (true / false)
+    infectivity_time = 504      # period in hours during which the virus remains contagious
+
+    # People
+    [environment.people]
+    count = 10000                                   # total number of people
+    hc_rate = 0.2                                   # rate of healty carrier
+    mask_rate = 0.7                                 # rate of people who wear a safety mask against the virus
+    vaccination_rate = 0                            # rate of people who have been vaccinated
+    trip_freq = 60                                  # base average number of times a person goes outside during the simulation cycle
+    trip_time = 2                                   # base period of trip in hours
+    nb_meeting = 10                                 # base average number of people met on every trip
+        # AGE CATEGORIES 
+        # young
+        [[environment.people.age_cat]]
+        type = "young"
+        rate = 0.3
+        # adult
+        [[environment.people.age_cat]]
+        type = "adult"
+        rate = 0.5
+        # senior
+        [[environment.people.age_cat]]
+        type = "senior"
+        rate = 0.2
+
+    # JOB CATEGORIES
+    # medical
+    [[environment.job_cat]]
+    type = "medical"            # type of job
+    mask_prio = 1               # priority on getting a mask in every containers
+    rate = 0.2                  # ratio among the total population
+    # road jobs
+    [[environment.job_cat]]
+    type = "lorry driver"
+    mask_prio = 2
+    rate = 0.2
+    # artisan
+    [[environment.job_cat]]
+    type = "artisan"
+    mask_prio = 3
+    rate = 0.3
+    # student
+    [[environment.job_cat]]
+    type = "student"
+    mask_prio = 3
+    rate = 0.3
+
+
+    # Vaccine
+    [environment.vaccine]
+    efficiency = 1                      # efficiency ratio
+    seroconversion = 168                # period before vaccination become effective
+    name = "chloroquine"                # name of the vaccine
+    inventor = "Dr. Didier RAOULT"      # person who discovered it
+
+    # Masks
+    [[environment.masks]]
+    type = "homemade"       # type of mask
+    efficiency = 0.5        # efficiency ratio
+    eff_period = 4          # period in hour before the mask become ineffective
+    rate = 0.6              # popularity among the population who wear masks
+
+    [[environment.masks]]
+    type = "FFP1"
+    efficiency = 0.8
+    eff_period = 4
+    rate = 0
+
+    [[environment.masks]]
+    type = "FFP2"
+    efficiency = 0.94
+    eff_period = 4
+    rate = 0.4
+
+    [[environment.masks]]
+    type = "FFP3"
+    efficiency = 0.995
+    eff_period = 4
+    rate = 0
