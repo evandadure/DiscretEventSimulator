@@ -16,11 +16,10 @@ class Car(object):
     def __init__(self, env):
         self.env = env
         # Start run process
-        self.action = env.process(self.run())
+        self.action = env.process(self.drive())
 
 
-
-    def run(self):
+    def drive(self):
         """
         """
         while True:
