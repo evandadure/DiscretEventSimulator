@@ -18,6 +18,10 @@ updated = "14/04/2020"
     name = "Evan Dadure"
     email = "evandadure@gmail.com"
 
+    [[project.authors]]
+    name = "Maxence Personaz"
+    email = "maxenceperso@gmail.com"
+
 
 # SIMULATION ENVIRONMENT
 [environment]
