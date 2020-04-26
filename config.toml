@@ -16,7 +16,7 @@ updated = "14/04/2020"
 
     [[project.authors]]
     name = "Evan Dadure"
-    email = "evandadure@gmail.com"
+    email = "evan.dadure@gmail.com"
 
     [[project.authors]]
     name = "Maxence Personaz"
@@ -63,6 +63,18 @@ nb_masks = 625          # base amount of masks available in each container/store
         [[environment.people.age_cat]]
         type = "senior"
         rate = 0.2
+        # HEALTH CONDITION
+        # Bad health
+        [[environment.people.health]]
+        type = "bad"
+        rate = 0.2
+        [[environment.people.health]]
+        type = "ok"
+        rate = 0.3
+        [[environment.people.health]]
+        type = "good"
+        rate = 0.5
+
 
     # JOB CATEGORIES
     # medical

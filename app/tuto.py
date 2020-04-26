@@ -23,7 +23,7 @@ class Car(object):
         """
         """
         while True:
-            print('Start parking and charging at %d' % self.env.now)
+            #print('Start parking and charging at %d' % self.env.now)
             charge_duration = 5
             # We may get interrupted while charging the battery
             try:
@@ -33,7 +33,7 @@ class Car(object):
                 # switch to the "driving" state
                 print('Was interrupted. Hope, the battery is full enough ')
 
-            print('Start driving at %d' % self.env.now)
+            #print('Start driving at %d' % self.env.now)
             trip_duration = 2
             yield self.env.timeout(trip_duration)
 
