@@ -38,7 +38,7 @@ class Person(object):
             # TRIP
             print("{} begins an outside trip at {}".format(self.id, self.env.now))
             yield self.env.process(self.go_out(self.trip_duration))
-            print("{} gets back at home at {}, {} people met".format(self.id, self.env.now, self.met))
+            print("{} gets back at home at {}, {} people met".format(self.id, self.env.now, self.met))  ##TODO : refresh met list
             # WAITING
             yield self.env.timeout(3)
 
@@ -49,9 +49,10 @@ class Person(object):
         # notify the exit in the global list
         global outsiders
         outsiders.append(self)       
-        # begining to meet people                     
+        # begining to meet people                
         yield self.env.process(self.meet_people(duration))
-    
+        outsiders.remove(self)
+
 
     def meet_people(self, duration):
         """
@@ -62,16 +63,13 @@ class Person(object):
 
         for i in range(self.nb_meeting):
             if outsiders:
-                tmp    = outsiders
+                tmp = outsiders.copy()
                 tmp.remove(self)                                        # avoid self-meeting
                 notmet = getDifference(tmp, self.met)                   # get people not met yet
                 if notmet:
                     p = notmet[random.randint(0, len(notmet)-1)]      # choose someone randomly among not met people
-                    self.met.append(p.id)                                # add him to met people
+                    self.met.append(p.id)                             # add him to met people
                     print("{} meets {} at {}".format(self.id, p.id, self.env.now))
-                
-            # wait a bit before meeting someone else     
-            yield self.env.timeout(random.randint(1, 3))
 
         yield self.env.timeout(duration)
             
@@ -81,7 +79,7 @@ if __name__ == "__main__":
     
     env = simpy.Environment()
     
-    for i in range(20):
+    for i in range(10):
         Person(env, i)
 
-    env.run(until=20)
+    env.run(until=10)
