@@ -25,7 +25,7 @@ updated = "14/04/2020"
 
 # SIMULATION ENVIRONMENT
 [environment]
-nb_cycle = 1            # number of cycles int the simulation
+nb_cycle = 1            # number of cycles in the simulation
 duration = 1344         # period of each cycle in hours
 confinement = false     # enable confinement (true / false)
 nb_masks = 625          # base amount of masks available in each container/store
