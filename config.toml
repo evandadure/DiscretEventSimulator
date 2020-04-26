@@ -64,13 +64,15 @@ nb_masks = 625          # base amount of masks available in each container/store
         type = "senior"
         rate = 0.2
         # HEALTH CONDITION
-        # Bad health
+        # bad
         [[environment.people.health]]
         type = "bad"
         rate = 0.2
+        # ok
         [[environment.people.health]]
         type = "ok"
         rate = 0.3
+        # good
         [[environment.people.health]]
         type = "good"
         rate = 0.5
