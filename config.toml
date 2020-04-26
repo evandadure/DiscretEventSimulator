@@ -34,6 +34,7 @@ nb_masks = 625          # base amount of masks available in each container/store
     [environment.virus]
     name = "COVID-19"
     infectivity = 1             # base probability of getting infected
+    mortality = 1               # base probability of death
     incubation = 336            # period in hours between infection and first appearance of symptoms
     infect_incr = false         # infection increased during incubation period (true / false)
     infectivity_time = 504      # period in hours during which the virus remains contagious
