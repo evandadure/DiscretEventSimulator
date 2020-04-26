@@ -37,17 +37,19 @@ nb_masks = 625          # base amount of masks available in each container/store
     mortality = 1               # base probability of death
     incubation = 336            # period in hours between infection and first appearance of symptoms
     infect_incr = false         # infection increased during incubation period (true / false)
+    sick_time = 336             # period between the first appearance of symptoms and healing/death
     infectivity_time = 504      # period in hours during which the virus remains contagious
+    immunity_time = 720         # period in hours during which the virus can't be transmitted
 
     # People
     [environment.people]
-    count = 10000                                   # total number of people
-    hc_rate = 0.2                                   # rate of healty carrier
-    mask_rate = 0.7                                 # rate of people who wear a safety mask against the virus
-    vaccination_rate = 0                            # rate of people who have been vaccinated
-    trip_freq = 60                                  # base average number of times a person goes outside during the simulation cycle
-    trip_time = 2                                   # base period of trip in hours
-    nb_meeting = 10                                 # base average number of people met on every trip
+    count = 10000                               # total number of people
+    hc_rate = 0.2                               # rate of healty carrier
+    mask_rate = 0.7                             # rate of people who wear a safety mask against the virus
+    vaccination_rate = 0                        # rate of people who have been vaccinated
+    trip_freq = [1, 60]                         # interval of times a person goes outside during the simulation cycle
+    trip_time = [1, 8]                          # period of each trip in hours
+    nb_meeting = [1, 10]                        # interval of people met on every trip
         # AGE CATEGORIES 
         # young
         [[environment.people.age_cat]]
