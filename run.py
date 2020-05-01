@@ -1,8 +1,9 @@
 import app
-from settings import DURATION
+from settings import config
+
 
 
 if __name__ == "__main__":
     
-    env = app.create_env()
-    env.run(until=DURATION)
+    env = app.init_env(config)
+    env.run(until=config['simulation']['duration'])

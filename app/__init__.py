@@ -1,30 +1,16 @@
 import simpy
-import random as rd
 
-from .tuto import Car, driver
-from settings import config
-from .person import Person
+from .Person import Person
 
 
 
-
-
-def create_env():
-    """
+def init_env(configs: dict):
+    """ Init the environment of simulation with configurated vars 
     """
     env = simpy.Environment()
-    person = Person(
-        env,
-        config['environment']['people']['age_cat'],
-        0,
-        config['environment']['people']['health'],
-        rd.randint(*config['environment']['people']['nb_meeting']),
-        rd.randint(*config['environment']['people']['trip_freq']),
-        0
-    )
 
-
-    car = Car(env)
-    env.process(driver(env, car))
+    # CREATE OUR POPULATION
+    for i in range(configs['simulation']['population']):
+        Person(env, name=i, duration=configs['simulation']['duration'], **configs['simulation']['people'])
 
     return env
