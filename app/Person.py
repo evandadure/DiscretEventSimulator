@@ -89,14 +89,15 @@ class Person(object):
 if __name__ == "__main__":
     
     env = simpy.Environment()
+    duration = 20
 
     conf = {
-        'trip_freq'     : 2,
+        'trip_freq'     : [2, 5],
         'trip_duration' : [1, 8],
         'nb_meeting'    : [3, 5]
     }
     
     for i in range(5):
-        Person(env, i, )
+        Person(env, name=i, duration=duration, **conf)
 
-    env.run(until=20)
+    env.run(until=duration)
