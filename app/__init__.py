@@ -1,14 +1,17 @@
 import simpy
 
 from .Person import Person
+from settings import config
+
+
+env     = simpy.Environment()
+outside = simpy.Resource(env, config['simulation']['population'])
 
 
 
-def init_env(configs: dict):
+def init_env(configs=config):
     """ Init the environment of simulation with configurated vars 
     """
-    env = simpy.Environment()
-
     # CREATE OUR POPULATION
     for i in range(configs['simulation']['population']):
         Person(env, name=i, duration=configs['simulation']['duration'], **configs['simulation']['people'])
