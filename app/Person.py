@@ -66,11 +66,11 @@ class Person(object):
     def meet_people(self, duration):
         """ Meet some people that went out too.
         """
-        global outside
         tmp, notmet = [], []
         p = None
 
         for i in range(self.nb_meeting): 
+            global outside
             if outside:
                 tmp = outside.copy()
                 tmp.remove(self)                                     # avoid self-meeting
@@ -79,7 +79,7 @@ class Person(object):
                     p = notmet[random.randint(0, len(notmet)-1)]     # choose someone randomly among not met people
                     self.met.append(p)                               # add him to met people
 
-        print("{} meet {} people".format(self.id, len(self.met))) 
+        print("{} meets {} people".format(self.id, len(self.met))) 
         yield self.env.timeout(duration)
             
 
