@@ -11,7 +11,7 @@ def courbe_evol(liste_abs,liste_ord,nom_abs,nom_ord):
     plt.show()
 
 def courbe_evol_cumul(liste_abs,liste_ord,nom_abs,nom_ord):
-    
+    pass
 
 
 days = range(20)
