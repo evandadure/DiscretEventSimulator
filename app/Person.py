@@ -2,7 +2,8 @@ import simpy
 import math
 import random
 
-
+# List of everyone
+people  = []
 # People outside
 outside = []
 
@@ -18,7 +19,7 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list) -> None:
+    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list, hc_rate: float) -> None:
         """
         """
         # attributes
@@ -27,7 +28,10 @@ class Person(object):
         self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
+        self.infected      = False if random.uniform(0, 1) > hc_rate else True      # Chance of being infected from start
         # simpy
+        global people
+        people.append(self)
         self.env    = env
         self.action = env.process(self.live())
         
@@ -58,31 +62,36 @@ class Person(object):
         outside.append(self)
         print('People outside : ', [p.id for p in outside])
         # begining to meet people               
-        yield self.env.process(self.meet_people(duration))
+        for i in range(self.nb_meeting):
+            self.meet_people()
+        print("{} meets {} people".format(self.id, len(self.met))) 
+        print(f"List of people : {[pers.id for pers in people]}")
+        yield self.env.timeout(duration)
         outside.remove(self)                                 # not outside anymore
 
 
 
-    def meet_people(self, duration):
+    def meet_people(self):
         """ Meet some people that went out too.
         """
         tmp, notmet = [], []
         p = None
 
-        for i in range(self.nb_meeting): 
-            global outside
-            if outside:
-                tmp = outside.copy()
-                tmp.remove(self)                                     # avoid self-meeting
-                notmet = getDifference(tmp, self.met)                # get people not met yet
-                if notmet:
-                    p = notmet[random.randint(0, len(notmet)-1)]     # choose someone randomly among not met people
-                    ##TODO : do a symetric meeting
-                    self.met.append(p)                               # add him to met people
-                    
+        global outside
+        if outside:
+            tmp = outside.copy()
+            tmp.remove(self)                                     # avoid self-meeting
+            notmet = getDifference(tmp, self.met)                # get people not met yet
+            if notmet:
+                p = notmet[random.randint(0, len(notmet)-1)]     # choose someone randomly among not met people
+                ##TODO : do a symetric meeting
+                self.met.append(p)                               # add him to met people
+                people[people.index(p)].met.append(self)
+                #outside[outside.index(p)].met.append(self)
 
-        print("{} meets {} people".format(self.id, len(self.met))) 
-        yield self.env.timeout(duration)
+
+
+
 
 
     
