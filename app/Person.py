@@ -3,9 +3,6 @@ import math
 import random
 
 
-# People outside
-outside = []
-
 
 def getDifference(l1 = [], l2 = []):
     """ Get unique elements in l1 without the ones in common with l2.
@@ -18,7 +15,7 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list) -> None:
+    def __init__(self, env: simpy.Environment, name: int, duration: int, outside: simpy.Resource, trip_freq: list, trip_duration: list, nb_meeting: list) -> None:
         """
         """
         # attributes
@@ -29,11 +26,11 @@ class Person(object):
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
         # simpy
         self.env    = env
-        self.action = env.process(self.live())
+        self.action = env.process(self.live(outside))
         
 
 
-    def live(self):
+    def live(self, outside):
         """ Define the behavior of a person in the simulation.
         """
         while True:     
@@ -42,7 +39,7 @@ class Person(object):
 
             # trip
             print("{} begins an outside trip at {}".format(self.id, self.env.now))
-            yield self.env.process(self.go_out(self.trip_duration))
+            yield self.env.process(self.go_out(self.trip_duration, outside))
             print("{} gets back at home at {}, {} people met".format(self.id, self.env.now, [p.id for p in self.met]))  ##TODO : refresh met list
 
             # re-initialize met people
@@ -50,29 +47,27 @@ class Person(object):
 
 
 
-    def go_out(self, duration):
+    def go_out(self, duration, outside):
         """ Go outside for a defined time.
         """
-        # notify the exit in the global list
-        global outside
-        outside.append(self)
-        print('People outside : ', [p.id for p in outside])
-        # begining to meet people               
-        yield self.env.process(self.meet_people(duration))
-        outside.remove(self)                                 # not outside anymore
+        with outside.request() as req:
+            yield req
+            print('NB PEOPLE OUTSIDE : {} on {}'.format(outside.count, outside.capacity))
+            print('PEOPLE OUTSIDE : {}'.format(outside.users))
+            # begining to meet people               
+            yield self.env.process(self.meet_people(duration, outside))
 
 
 
-    def meet_people(self, duration):
+    def meet_people(self, duration, outside):
         """ Meet some people that went out too.
         """
         tmp, notmet = [], []
         p = None
 
-        for i in range(self.nb_meeting): 
-            global outside
-            if outside:
-                tmp = outside.copy()
+        for i in range(self.nb_meeting):
+            tmp = outside.users
+            if tmp:
                 tmp.remove(self)                                     # avoid self-meeting
                 notmet = getDifference(tmp, self.met)                # get people not met yet
                 if notmet:
@@ -88,8 +83,11 @@ class Person(object):
 # Launch for tutorial purposes only
 if __name__ == "__main__":
     
-    env = simpy.Environment()
     duration = 20
+    nbpeople = 5
+    env = simpy.Environment()
+    outside = simpy.Resource(env, nbpeople)
+    
 
     conf = {
         'trip_freq'     : [2, 5],
@@ -97,7 +95,7 @@ if __name__ == "__main__":
         'nb_meeting'    : [3, 5]
     }
     
-    for i in range(5):
-        Person(env, name=i, duration=duration, **conf)
+    for i in range(nbpeople):
+        Person(env, name=i, duration=duration, outside=outside, **conf)
 
     env.run(until=duration)
