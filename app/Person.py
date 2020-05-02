@@ -19,21 +19,36 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list, hc_rate: float) -> None:
+    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list) -> None:
         """
         """
         # attributes
         self.id            = name
-        self.met           = []
+        self.met           = set([])
+        self.infections    = []
         self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
-        self.infected      = False if random.uniform(0, 1) > hc_rate else True      # Chance of being infected from start
+        self.infected      = True if random.random() < 0.3 else False               # Chance of being infected from start
+        self.infector      = None
+        self.infected_at   = None
         # simpy
         global people
         people.append(self)
         self.env    = env
         self.action = env.process(self.live())
+
+
+
+    def printStats(self):
+        """
+        """
+        inf = "infected by {}".format(self.getInfector()) if self.infected else "clean"
+        print("=======================================================")
+        print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
+        print("State : {}".format(inf))
+        print("People infected : ", [p['infected'] for p in self.infections])
+        print("=======================================================")
         
 
 
@@ -47,10 +62,11 @@ class Person(object):
             # trip
             print("{} begins an outside trip at {}".format(self.id, self.env.now))
             yield self.env.process(self.go_out(self.trip_duration))
-            print("{} gets back at home at {}, {} people met".format(self.id, self.env.now, [p.id for p in self.met]))  ##TODO : refresh met list
+            print("{} gets back at home at {}".format(self.id, self.env.now))
+            self.printStats()
 
             # re-initialize met people
-            self.met = []
+            self.met = set([])
 
 
 
@@ -61,13 +77,13 @@ class Person(object):
         global outside
         outside.append(self)
         print('People outside : ', [p.id for p in outside])
-        # begining to meet people               
+
+        # starting to meet people            
         for i in range(self.nb_meeting):
             self.meet_people()
-        print("{} meets {} people".format(self.id, len(self.met))) 
-        print(f"List of people : {[pers.id for pers in people]}")
+        
         yield self.env.timeout(duration)
-        outside.remove(self)                                 # not outside anymore
+        outside.remove(self)               # not outside anymore
 
 
 
@@ -84,22 +100,45 @@ class Person(object):
             notmet = getDifference(tmp, self.met)                # get people not met yet
             if notmet:
                 p = notmet[random.randint(0, len(notmet)-1)]     # choose someone randomly among not met people
-                ##TODO : do a symetric meeting
-                self.met.append(p)                               # add him to met people
-                people[people.index(p)].met.append(self)
-                #outside[outside.index(p)].met.append(self)
+                self.met.add(p)                                  # add him to met people
+                global people
+                people[people.index(p)].met.add(self)            # symetric meeting
+                # INFECTION TEST
+                self.infection(p)
 
 
 
-
-
-
-    
-    def infect(self, p1):
+    def infection(self, p):
         """
         """
-        return 0
-            
+        # At least one is not infected
+        if not (self.infected and p.infected):
+            infector = self if self.infected else p if p.infected else None     # infector is self or p, else None
+            if infector:
+                infected = self if infector == p else p             # infected is self or p
+                infected.setInfectionAttr(infector, self.env.now)   # set infection
+                infector.infections.append({'infected': infected.id, 'at': self.env.now})
+                print("{} infected {} at {}".format(infector.id, infected.id, self.env.now))
+        else:
+            ## monitor 0 infection case ?
+            pass
+
+
+
+    def setInfectionAttr(self, infector, time):
+        """
+        """
+        self.infected = True
+        self.infector = infector
+        self.infected_at = time
+        
+
+
+    def getInfector(self):
+        """ Return the person who transmitted the infection
+        """
+        return self.infector.id if isinstance(self.infector, Person) else None
+
 
 
 
@@ -116,6 +155,7 @@ if __name__ == "__main__":
     }
     
     for i in range(5):
-        Person(env, name=i, duration=duration, **conf)
+        print(type(Person(env, name=i, duration=duration, **conf)))
+        
 
-    env.run(until=duration)
+    # env.run(until=duration)
