@@ -79,7 +79,7 @@ class Person(object):
                     p = notmet[random.randint(0, len(notmet)-1)]     # choose someone randomly among not met people
                     ##TODO : do a symetric meeting
                     self.met.append(p)                               # add him to met people
-                    yield self.env.process(self.infect(p))
+                    
 
         print("{} meets {} people".format(self.id, len(self.met))) 
         yield self.env.timeout(duration)
@@ -89,7 +89,7 @@ class Person(object):
     def infect(self, p1):
         """
         """
-        pass
+        return 0
             
 
 
