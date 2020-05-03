@@ -1,6 +1,13 @@
 import simpy
 import math
 import random
+from settings import config
+from .Virus import Virus
+
+# CREATE VIRUS
+virus = Virus(
+    **config['simulation']['virus'],
+)
 
 # List of everyone
 people  = []
@@ -112,11 +119,12 @@ class Person(object):
     def infection(self, p):
         """
         """
+
         # At least one is not infected
-        if not (self.infected and p.infected):
+        if not (self.isInfective() and (p.isInfective())):
             infector = self if self.infected else p if p.infected else None     # infector is self or p, else None
             if infector:
-                if self.getInfectionRate() > random.random():
+                if self.getInfectionRate() >= random.random():
                     infected = self if infector == p else p             # infected is self or p
                     infected.setInfectionAttr(infector, self.env.now)   # set infection
                     infector.infections.append({'infected': infected.id, 'at': self.env.now})
@@ -140,12 +148,13 @@ class Person(object):
 
     
     def getInfectionRate(self):
-        infectRate = 1          # Virus infectivity
+        infectRate = virus.getInfectivity()
         if self.mask_on:
             infectRate -= 0.5   # Mask efficiency
         return infectRate
         
-
+    def isInfective(self):
+        return virus.isInfective(self, self.env.now)
 
     def getInfector(self):
         """ Return the person who transmitted the infection
