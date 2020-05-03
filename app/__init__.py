@@ -3,6 +3,7 @@ import simpy
 from settings import config
 from .Person import Person
 from .analizing import *
+from .plots import *
 
 
 

@@ -74,21 +74,27 @@ def courbe_3d(liste_x,liste_y,liste_z,nom_x,nom_y,nom_z):
 #------------------------------------------------------
 # Exemples d'utilisation
 #------------------------------------------------------
+#
+# nb_days = 20
+# days = range(nb_days)
+# nb_infected = [random.randrange(1, 50, 1) for i in range(nb_days)]
+#
+# # courbe_evol
+# courbe_evol(days,nb_infected,"Jours","Nombre d'infectés")
+#
+# # courbe_evol_cumul
+# courbe_evol_cumul(days,nb_infected,"Jours","Nombre d'infectés")
+#
+# # pie_chart
+# labels = ['65+ ans','45-65 ans','25-45 ans','0-25 ans']
+# sizes = [70, 20, 8, 2]
+# pie_chart(labels,sizes,'Répartition du nombre d\'infectés en fonction de l\'âge')
 
-nb_days = 20
-days = range(nb_days)
-nb_infected = [random.randrange(1, 50, 1) for i in range(nb_days)]
 
-# courbe_evol
-courbe_evol(days,nb_infected,"Jours","Nombre d'infectés")
 
-# courbe_evol_cumul
-courbe_evol_cumul(days,nb_infected,"Jours","Nombre d'infectés")
 
-# pie_chart
-labels = ['65+ ans','45-65 ans','25-45 ans','0-25 ans']
-sizes = [70, 20, 8, 2]
-pie_chart(labels,sizes,'Répartition du nombre d\'infectés en fonction de l\'âge')
+
+
 
 # courbe_3d
 # nb_days = 20
