@@ -29,9 +29,9 @@ class Person(object):
         self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
-        self.infected      = True if random.random() < 0.3 else False               # Chance of being infected from start
+        self.infected      = True if random.random() <= 0.3 else False              # Chance of being infected from start
         self.infector      = None
-        self.infected_at   = None
+        self.infected_at   = 0
         # simpy
         global people
         people.append(self)
@@ -43,8 +43,8 @@ class Person(object):
     def printStats(self):
         """
         """
-        inf = "infected by {}".format(self.getInfector()) if self.infected else "clean"
-        print("=======================================================")
+        inf = "infected by {} at {}".format(self.getInfector(), self.infected_at) if self.infected else "clean"
+        print("========================= STATS ==========================")
         print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
         print("State : {}".format(inf))
         print("People infected : ", [p['infected'] for p in self.infections])
@@ -118,7 +118,7 @@ class Person(object):
                 infected = self if infector == p else p             # infected is self or p
                 infected.setInfectionAttr(infector, self.env.now)   # set infection
                 infector.infections.append({'infected': infected.id, 'at': self.env.now})
-                print("{} infected {} at {}".format(infector.id, infected.id, self.env.now))
+                print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
         else:
             ## monitor 0 infection case ?
             pass
