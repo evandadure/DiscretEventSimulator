@@ -58,11 +58,11 @@ class Person(object):
         """
         """
         inf = "infected by {} at {}".format(self.getInfector(), self.infected_at) if self.infected else "clean"
-        print(f"================ STATS of : {self.id} ================")
-        print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
-        print("State : {}".format(inf))
-        print("People infected : ", [p['id'] for p in self.infections])
-        print("=======================================================")
+        #print(f"================ STATS of : {self.id} ================")
+        #print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
+        #print("State : {}".format(inf))
+        #print("People infected : ", [p['id'] for p in self.infections])
+        #print("=======================================================")
         
 
 
@@ -74,9 +74,9 @@ class Person(object):
             yield self.env.timeout(self.trip_freq)
 
             # trip
-            print("{} begins an outside trip at {}".format(self.id, self.env.now))
+            #print("{} begins an outside trip at {}".format(self.id, self.env.now))
             yield self.env.process(self.go_out(self.trip_duration))
-            print("{} gets back at home at {}".format(self.id, self.env.now))
+            #print("{} gets back at home at {}".format(self.id, self.env.now))
             self.printStats()
 
             # re-initialize met people
@@ -90,7 +90,7 @@ class Person(object):
         # notify the exit in the global list
         global outside
         outside.append(self)
-        print('People outside : ', [p.id for p in outside])
+        #print('People outside : ', [p.id for p in outside])
 
         # starting to meet people            
         for i in range(self.nb_meeting):
@@ -136,10 +136,10 @@ class Person(object):
                     record = {'id': str(infected.id), 'infected_at': self.env.now, 'infected_by': str(infector.id)}
                     self.monitoring(record)
                     infector.infections.append(record)                  # local save
-                    print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
+                    #print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
                 else:
                     almost_infected = self if infector == p else p
-                    print(f"{infector.id} failed to infect {almost_infected.id} with infectivity rate : {infector.getInfectionRate()}")
+                    #print(f"{infector.id} failed to infect {almost_infected.id} with infectivity rate : {infector.getInfectionRate()}")
         else:
             ## monitor 0 infection case ?
             pass
@@ -186,20 +186,20 @@ class Person(object):
 
 
 
-# Launch for tutorial purposes only
-if __name__ == "__main__":
+# # Launch for tutorial purposes only
+# if __name__ == "__main__":
     
-    env = simpy.Environment()
-    duration = 20
+#     env = simpy.Environment()
+#     duration = 20
 
-    conf = {
-        'trip_freq'     : [2, 5],
-        'trip_duration' : [1, 8],
-        'nb_meeting'    : [3, 5]
-    }
+#     conf = {
+#         'trip_freq'     : [2, 5],
+#         'trip_duration' : [1, 8],
+#         'nb_meeting'    : [3, 5]
+#     }
     
-    for i in range(5):
-        print(type(Person(env, name=i, duration=duration, **conf)))
+#     for i in range(5):
+#         #print(type(Person(env, name=i, duration=duration, **conf)))
         
 
-    # env.run(until=duration)
+#     # env.run(until=duration)
