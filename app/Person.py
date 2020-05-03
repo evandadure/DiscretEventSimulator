@@ -119,10 +119,9 @@ class Person(object):
     def infection(self, p):
         """
         """
-
         # At least one is not infected
         if not (self.isInfective() and (p.isInfective())):
-            infector = self if self.infected else p if p.infected else None     # infector is self or p, else None
+            infector = self if self.isInfective() else p if p.isInfective() else None     # infector is self or p, else None
             if infector:
                 if self.getInfectionRate() >= random.random():
                     infected = self if infector == p else p             # infected is self or p
@@ -151,10 +150,17 @@ class Person(object):
         infectRate = virus.getInfectivity()
         if self.mask_on:
             infectRate -= 0.5   # Mask efficiency
+        if self.isInIncubation():
+            infectRate *= 1.5   # Incubation increase contagiousness by 1.5
         return infectRate
         
+
     def isInfective(self):
         return virus.isInfective(self, self.env.now)
+    
+    def isInIncubation(self):
+        return virus.isInIncubation(self, self.env.now)
+
 
     def getInfector(self):
         """ Return the person who transmitted the infection
