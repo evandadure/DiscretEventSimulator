@@ -1,6 +1,9 @@
 import simpy
-from .Person import Person
+
 from settings import config
+from .Person import Person
+from .analizing import *
+
 
 
 def init_env():
