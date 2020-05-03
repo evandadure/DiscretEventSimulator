@@ -19,7 +19,7 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list) -> None:
+    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float) -> None:
         """
         """
         # attributes
@@ -29,9 +29,10 @@ class Person(object):
         self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
-        self.infected      = True if random.random() <= 0.3 else False              # Chance of being infected from start
+        self.infected      = True if random.random() <= infected_rate else False    # Chance of being infected from start
         self.infector      = None
         self.infected_at   = 0
+        self.mask_on       = True if random.random() <= 0.5 else False
         # simpy
         global people
         people.append(self)
@@ -44,7 +45,7 @@ class Person(object):
         """
         """
         inf = "infected by {} at {}".format(self.getInfector(), self.infected_at) if self.infected else "clean"
-        print("========================= STATS ==========================")
+        print(f"================ STATS of : {self.id} ================")
         print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
         print("State : {}".format(inf))
         print("People infected : ", [p['infected'] for p in self.infections])
@@ -115,10 +116,14 @@ class Person(object):
         if not (self.infected and p.infected):
             infector = self if self.infected else p if p.infected else None     # infector is self or p, else None
             if infector:
-                infected = self if infector == p else p             # infected is self or p
-                infected.setInfectionAttr(infector, self.env.now)   # set infection
-                infector.infections.append({'infected': infected.id, 'at': self.env.now})
-                print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
+                if self.getInfectionRate() > random.random():
+                    infected = self if infector == p else p             # infected is self or p
+                    infected.setInfectionAttr(infector, self.env.now)   # set infection
+                    infector.infections.append({'infected': infected.id, 'at': self.env.now})
+                    print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
+                else:
+                    almost_infected = self if infector == p else p
+                    print(f"{infector.id} failed to infect {almost_infected.id} with infectivity rate : {infector.getInfectionRate()}")
         else:
             ## monitor 0 infection case ?
             pass
@@ -131,6 +136,14 @@ class Person(object):
         self.infected = True
         self.infector = infector
         self.infected_at = time
+
+
+    
+    def getInfectionRate(self):
+        infectRate = 1          # Virus infectivity
+        if self.mask_on:
+            infectRate -= 0.5   # Mask efficiency
+        return infectRate
         
 
 

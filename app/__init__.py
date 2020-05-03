@@ -11,6 +11,6 @@ def init_env(configs: dict):
 
     # CREATE OUR POPULATION
     for i in range(configs['simulation']['population']):
-        Person(env, name=i, duration=configs['simulation']['duration'], **configs['simulation']['people'])
+        Person(env, name=i, duration=configs['simulation']['duration'], **configs['simulation']['people'], infected_rate=configs['simulation']['infected_rate'])
 
     return env
