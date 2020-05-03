@@ -26,10 +26,10 @@ updated = "01/05/2020"
 # SIMULATION ENVIRONMENT
 [simulation]
 nb_cycle = 1            # number of cycles in the simulation
-duration = 10           # period of each cycle in hours
-population = 5          # total number of people in the environment
+duration = 100           # period of each cycle in hours
+population = 2000       # total number of people in the environment
 infected_pop = 2        # numbre of infected people at the start    (We'll either choose this one or infected_pop)
-infected_rate = 0.4     # rate of infected people at the start      (We'll either choose this one or infected_rate)
+infected_rate = 0.01     # rate of infected people at the start      (We'll either choose this one or infected_rate)
 hc_rate = 0.2           # rate of healty carrier
 mask_rate = 0.7         # rate of people who wear a safety mask against the virus
 vaccination_rate = 0    # rate of people who have been vaccinated
@@ -88,13 +88,13 @@ nb_masks = 625          # base amount of masks available in each container/store
     # Virus
     [simulation.virus]
     name = "COVID-19"
-    infectivity = 1             # base probability of getting infected
+    infectivity = 0.03            # base probability of getting infected
     mortality = 1               # base probability of death
-    incubation = 336            # period in hours between infection and first appearance of symptoms
+    incubation = 33            # period in hours between infection and first appearance of symptoms
     infect_incr = false         # infection increased during incubation period (true / false)
-    sick_time = 336             # period between the first appearance of symptoms and healing/death
-    infectivity_time = 504      # period in hours during which the virus remains contagious
-    immunity_time = 720         # period in hours during which the virus can't be transmitted
+    sick_time = 336            # period between the first appearance of symptoms and healing/death
+    infectivity_time = 50    # period in hours during which the virus remains contagious
+    immunity_time = 72       # period in hours during which the virus can't be transmitted
 
     # People
     [simulation.people]
