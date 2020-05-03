@@ -36,28 +36,32 @@ def pie_chart(labels,sizes,title):
 
     plt.show()
 
-def courbe_3d(liste_x,liste_y,_liste_z,nom_x,nom_y,nom_z):
+def courbe_3d(liste_x,liste_y,liste_z,nom_x,nom_y,nom_z):
+    n_radii = 8
+    n_angles = 36
+
+    # Make radii and angles spaces (radius r=0 omitted to eliminate duplication).
+    radii = np.linspace(0.125, 1.0, n_radii)
+    angles = np.linspace(0, 2 * np.pi, n_angles, endpoint=False)
+
+    # Repeat all angles for each radius.
+    angles = np.repeat(angles[..., np.newaxis], n_radii, axis=1)
+
+    # Convert polar (radii, angles) coords to cartesian (x, y) coords.
+    # (0, 0) is manually added at this stage,  so there will be no duplicate
+    # points in the (x, y) plane.
+    # x = np.append(0, (radii * np.cos(angles)).flatten())
+    # y = np.append(0, (radii * np.sin(angles)).flatten())
+
+    # Compute z to make the pringle surface.
+    # z = np.sin(-x * y)
+    x = np.asarray([float(i) for i in liste_x])
+    y = np.asarray([float(i) for i in liste_y])
+    z = np.asarray([float(i) for i in liste_z])
     fig = plt.figure()
     ax = fig.gca(projection='3d')
 
-    # Make data.
-    X = np.arange(-5, 5, 0.25)
-    Y = np.arange(-5, 5, 0.25)
-    X, Y = np.meshgrid(X, Y)
-    R = np.sqrt(X ** 2 + Y ** 2)
-    Z = np.sin(R)
-
-    # Plot the surface.
-    surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
-                           linewidth=0, antialiased=False)
-
-    # Customize the z axis.
-    ax.set_zlim(-1.01, 1.01)
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
+    ax.plot_trisurf(x,y,z, linewidth=0.2, antialiased=True)
 
     plt.show()
 
@@ -87,4 +91,10 @@ sizes = [70, 20, 8, 2]
 pie_chart(labels,sizes,'Répartition du nombre d\'infectés en fonction de l\'âge')
 
 # courbe_3d
-courbe_3d([],[],[],'','','')
+# nb_days = 20
+# days = list(range(nb_days))
+# taux = [i/nb_days for i in range(0,3*nb_days,3)] # [0.0, 0.03, 0.06, 0.09, 0.12, 0.15, 0.18, 0.21, 0.24,...,2.97]
+# nb_infected = []
+# for t in taux:
+#     nb_infected.append(random.randint(int(t*nb_days), int((t*nb_days)**2)))
+# courbe_3d(days,taux,nb_infected,'','','')
