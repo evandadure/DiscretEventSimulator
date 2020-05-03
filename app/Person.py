@@ -2,10 +2,9 @@ import simpy
 import math
 import random
 
-# List of everyone
-people  = []
-# People outside
-outside = []
+data = []           # Monitored data
+people  = []        # List of every people
+outside = []        # List of outside people
 
 
 def getDifference(l1 = [], l2 = []):
@@ -22,10 +21,10 @@ class Person(object):
     def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float) -> None:
         """
         """
-        # attributes
+        # ATTRIBUTES
         self.id            = name
         self.met           = set([])
-        self.infections    = []
+        self.infections    = []                                                     # data about sucessful infections
         self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
@@ -33,7 +32,14 @@ class Person(object):
         self.infector      = None
         self.infected_at   = 0
         self.mask_on       = True if random.random() <= 0.5 else False
-        # simpy
+        self.dead          = False
+
+        # BASE MONITORING
+        if self.infected:
+            global data
+            data.append({'id': str(self.id), 'infected_at': self.infected_at, 'infected_by': 'primary infection'})
+
+        # SIMPY
         global people
         people.append(self)
         self.env    = env
@@ -48,7 +54,7 @@ class Person(object):
         print(f"================ STATS of : {self.id} ================")
         print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
         print("State : {}".format(inf))
-        print("People infected : ", [p['infected'] for p in self.infections])
+        print("People infected : ", [p['id'] for p in self.infections])
         print("=======================================================")
         
 
@@ -119,7 +125,10 @@ class Person(object):
                 if self.getInfectionRate() > random.random():
                     infected = self if infector == p else p             # infected is self or p
                     infected.setInfectionAttr(infector, self.env.now)   # set infection
-                    infector.infections.append({'infected': infected.id, 'at': self.env.now})
+                    # RECORD / MONITORING
+                    record = {'id': str(infected.id), 'infected_at': self.env.now, 'infected_by': str(infector.id)}
+                    self.monitoring(record)
+                    infector.infections.append(record)                  # local save
                     print("{} infects {} at {}".format(infector.id, infected.id, self.env.now))
                 else:
                     almost_infected = self if infector == p else p
@@ -151,6 +160,13 @@ class Person(object):
         """ Return the person who transmitted the infection
         """
         return self.infector.id if isinstance(self.infector, Person) else None
+
+
+    def monitoring(self, record: dict):
+        """
+        """
+        global data
+        data.append(record)
 
 
 

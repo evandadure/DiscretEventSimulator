@@ -1,5 +1,6 @@
 import simpy
 
+from .analizing import *
 from .Person import Person
 
 
