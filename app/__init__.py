@@ -1,21 +1,21 @@
 import simpy
-
 from .Person import Person
-from .Person import people
+from settings import config
 
 
-def init_env(configs: dict):
+def init_env():
     """ Init the environment of simulation with configurated vars 
     """
     env = simpy.Environment()
 
+
     # CREATE OUR POPULATION
-    for i in range(configs['simulation']['population']):
+    for i in range(config['simulation']['population']):
         Person(env, 
             name=i, 
-            duration=configs['simulation']['duration'], 
-            **configs['simulation']['people'], 
-            infected_rate=configs['simulation']['infected_rate'])
+            duration=config['simulation']['duration'], 
+            **config['simulation']['people'], 
+            infected_rate=config['simulation']['infected_rate'])
 
 
     return env
