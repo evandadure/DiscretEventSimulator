@@ -1,17 +1,17 @@
 import simpy
 import math
 import random
+
 from settings import config
-from .Virus import Virus
+from .setup import virus
 
-# CREATE VIRUS
-virus = Virus(
-    **config['simulation']['virus'],
-)
 
-data = []           # Monitored data
-people  = []        # List of every people
-outside = []        # List of outside people
+DURATION = config['simulation']['duration']
+
+data    = []    # monitored data
+people  = []    # list of every people
+outside = []    # list of outside people
+
 
 
 def getDifference(l1 = [], l2 = []):
@@ -25,14 +25,14 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, duration: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float) -> None:
+    def __init__(self, env: simpy.Environment, name: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float) -> None:
         """
         """
         # ATTRIBUTES
         self.id            = name
         self.met           = set([])
         self.infections    = []                                                     # data about sucessful infections
-        self.trip_freq     = math.ceil( duration / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
+        self.trip_freq     = math.ceil( DURATION / random.randint(*trip_freq) )     # number of ticks to wait between each trip (rounded up) 
         self.trip_duration = random.randint(*trip_duration)                         # duration of each trip
         self.nb_meeting    = random.randint(*nb_meeting)                            # number of people met by trip
         self.infected      = True if random.random() <= infected_rate else False    # Chance of being infected from start
@@ -41,7 +41,7 @@ class Person(object):
         self.mask_on       = True if random.random() <= 0.5 else False
         self.dead          = False
 
-        # BASE MONITORING
+        # INITIAL MONITORING
         if self.infected:
             global data
             data.append({'id': str(self.id), 'infected_at': self.infected_at, 'infected_by': 'primary infection'})
@@ -58,11 +58,11 @@ class Person(object):
         """
         """
         inf = "infected by {} at {}".format(self.getInfector(), self.infected_at) if self.infected else "clean"
-        #print(f"================ STATS of : {self.id} ================")
-        #print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
-        #print("State : {}".format(inf))
-        #print("People infected : ", [p['id'] for p in self.infections])
-        #print("=======================================================")
+        print(f"================ STATS of : {self.id} ================")
+        print("{} people met : {}".format(len(self.met), [p.id for p in self.met]))
+        print("State : {}".format(inf))
+        print("People infected : ", [p['id'] for p in self.infections])
+        print("=======================================================")
         
 
 
@@ -77,10 +77,10 @@ class Person(object):
             #print("{} begins an outside trip at {}".format(self.id, self.env.now))
             yield self.env.process(self.go_out(self.trip_duration))
             #print("{} gets back at home at {}".format(self.id, self.env.now))
-            self.printStats()
+            #self.printStats()
 
             # re-initialize met people
-            self.met = set([])
+            self.met.clear()
 
 
 
@@ -126,10 +126,10 @@ class Person(object):
         """
         """
         # At least one is not infected
-        if not (self.isInfective() and (p.isInfective())):
-            infector = self if self.isInfective() else p if p.isInfective() else None     # infector is self or p, else None
+        if not (self.isContagious() and (p.isContagious())):
+            infector = self if self.isContagious() else p if p.isContagious() else None     # infector is self or p, else None
             if infector:
-                if self.getInfectionRate() >= random.random():
+                if self.getInfectionChance() >= random.random():
                     infected = self if infector == p else p             # infected is self or p
                     infected.setInfectionAttr(infector, self.env.now)   # set infection
                     # RECORD / MONITORING
@@ -147,7 +147,7 @@ class Person(object):
 
 
     def setInfectionAttr(self, infector, time):
-        """
+        """ Set all attributes relative to an infection case
         """
         self.infected = True
         self.infector = infector
@@ -155,19 +155,29 @@ class Person(object):
 
 
     
-    def getInfectionRate(self):
-        infectRate = virus.getInfectivity()
-        if self.mask_on:
-            infectRate -= 0.5   # Mask efficiency
+    def getInfectionChance(self):
+        """ Returns a probability of getting infected
+        """
+        global virus
+        infChance = virus.getInfectivity()  # base infection chance
+
         if self.isInIncubation():
-            infectRate *= 1.5   # Incubation increase contagiousness by 1.5
-        return infectRate
+            infChance /= 0.3                # subject is more contagious during incubation
+        # if self.mask_on:
+        #     infChance *= 0.5   # Mask efficiency
+        
+        return infChance
         
 
-    def isInfective(self):
-        return virus.isInfective(self, self.env.now)
+    def isContagious(self):
+        """ Tells if the subject is still contagious
+        """
+        return virus.isContagious(self, self.env.now)
     
+
     def isInIncubation(self):
+        """ Tells if the subject is in incubation period
+        """
         return virus.isInIncubation(self, self.env.now)
 
 
@@ -178,7 +188,7 @@ class Person(object):
 
 
     def monitoring(self, record: dict):
-        """
+        """ Monitor data in global variable
         """
         global data
         data.append(record)
