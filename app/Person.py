@@ -127,7 +127,7 @@ class Person(object):
         """
         """
         # At least one is not infected
-        if not (self.isContagious() and (p.isContagious())):
+        if not ((self.isContagious() and self.infected) and (p.isContagious() and p.infected)):
             infector = self if self.isContagious() else p if p.isContagious() else None     # infector is self or p, else None
             if infector:
                 if self.getInfectionChance() >= random.random():
@@ -163,7 +163,7 @@ class Person(object):
         infChance = virus.getInfectivity()  # base infection chance
 
         if self.isInIncubation():
-            infChance /= 0.3                # subject is more contagious during incubation
+            infChance *= virus.getIncubationRate() # subject is more contagious during incubation
         # if self.mask_on:
         #     infChance *= 0.5   # Mask efficiency
         
@@ -179,6 +179,12 @@ class Person(object):
     def isInIncubation(self):
         """ Tells if the subject is in incubation period
         """
+        return virus.isInIncubation(self, self.env.now)
+
+
+    def isSick(self):
+        """ Tells if the subject is sick (presenting symptoms)
+        """        
         return virus.isInIncubation(self, self.env.now)
 
 

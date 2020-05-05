@@ -5,7 +5,9 @@ class Virus(object):
     """
     """
 
-    def __init__(self, name: str, infectivity: float, mortality: float, incubation: int, infect_incr: bool, sick_time: int, infectivity_time: int, immunity_time: int):
+    def __init__(self, name: str, infectivity: float, mortality: float, incubation: int,
+                 infect_incr: bool, sick_time: int, infectivity_time: int, immunity_time: int,
+                 incubation_rate: float, sickness_rate: float):
         """
         """
         self.name = name
@@ -16,6 +18,8 @@ class Virus(object):
         self.sick_time = sick_time
         self.infectivity_time = infectivity_time
         self.immunity_time = immunity_time
+        self.incubation_rate = incubation_rate
+        self.sickness_rate = sickness_rate
 
 
     def getName(self):
@@ -58,6 +62,19 @@ class Virus(object):
         """
         """
         return self.immunity_time
+
+
+    def getIncubationRate(self):
+        """
+        """
+        return self.incubation_rate
+
+
+    def getSicknessRate(self):
+        """
+        """
+        return self.sickenss_rate
+
 
 
     def isInIncubation(self, person, envtime):
