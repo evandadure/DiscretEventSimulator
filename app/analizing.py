@@ -12,16 +12,28 @@ def printResults():
     print(json.dumps(data, indent=4))
 
 
-def getNbInfectedPerPeriod(nb_period):
+def getNbInfectedPerPeriod(nb_period, population):
     """
     """
     global data
-    infected_list = [0] * nb_period
+    #--------debug
+    ppl_infected = [0] * population
+    infection_list = [0] * nb_period
+    tt = data
     for infection in data:
-        period = infection['infected_at']
-        infected_list[period]+=1
+        #--------debug
+        if not isinstance(ppl_infected[int(infection['id'])], list):
+            ppl_infected[int(infection['id'])] = [int(infection['id'])]
+        ppl_infected[int(infection['id'])].append([infection['infected_at'], infection['infected_by']])
+        #--------debug
 
-    return infected_list
+        period = infection['infected_at']
+        infection_list[period]+=1
+    #--------debug
+    ppl_infected = list(filter((0).__ne__, ppl_infected)) #[id de la personne, [heure d'infection, source d'infection],...]
+    #--------debug
+
+    return infection_list
 
 
 
