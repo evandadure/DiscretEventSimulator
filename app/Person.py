@@ -163,9 +163,9 @@ class Person(object):
         infChance = virus.getInfectivity()  # base infection chance
 
         if self.isInIncubation():
-            infChance /= 0.3                # subject is more contagious during incubation
-        # if self.mask_on:
-        #     infChance *= 0.5   # Mask efficiency
+            infChance += infChance*0.3                # subject is more contagious during incubation
+        if self.mask_on:
+            infChance -= infChance*0.5                # Mask efficiency
         
         return infChance
         
