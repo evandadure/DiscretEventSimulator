@@ -46,8 +46,8 @@ nb_masks = 625          # base amount of masks available in each container/store
     sick_time = 336            # period between the first appearance of symptoms and healing/death
     infectivity_time = 50    # period in hours during which the virus remains contagious
     immunity_time = 72       # period in hours during which the virus can't be transmitted
-    incubation_rate = 1.3
-    sickness_rate = 0.7
+    incubation_rate = 1.3   # When in incubation, the infectivity is multiplied by this rate 
+    sickness_rate = 0.7     # When in sickness, the infectivity is multiplied by this rate
 
     # People
     [simulation.people]

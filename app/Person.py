@@ -56,7 +56,8 @@ class Person(object):
 
 
     def printStats(self):
-        """
+        """ This method was used to follow the simulation step by step.
+            DO NOT CALL WHEN POPULATION PARAMETER IS TOO HIGH
         """
         inf = "infected by {} at {}".format(self.getInfector(), self.infected_at) if self.infected else "clean"
         print(f"================ STATS of : {self.id} ================")
@@ -87,6 +88,8 @@ class Person(object):
 
     def go_out(self, duration):
         """ Go outside for a defined time.
+            When outside, it will try to meet as much 
+            people as parameter ["nb_meeting"]
         """
         # notify the exit in the global list
         global outside
@@ -104,6 +107,7 @@ class Person(object):
 
     def meet_people(self):
         """ Meet some people that went out too.
+            While meeting people, they might infect each other
         """
         tmp, notmet = [], []
         p = None
@@ -124,7 +128,8 @@ class Person(object):
 
 
     def infection(self, p):
-        """
+        """ two people might infect each other if at least one of them is
+            contagious and infected
         """
         # At least one is not infected
         if not(self.infected and p.infected):

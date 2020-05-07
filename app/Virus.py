@@ -78,7 +78,7 @@ class Virus(object):
 
 
     def isInIncubation(self, person, envtime):
-        """
+        """ Check if person is in incubation state
         """
         isIncubated = False
         if (envtime - person.infected_at) <= self.incubation:
@@ -87,7 +87,7 @@ class Virus(object):
 
 
     def isSick(self, person, envtime):
-        """
+        """ Check if person is in sickess state
         """
         isSick = False
         if ((envtime - person.infected_at) > self.incubation) and ((envtime - person.infected_at) <= self.sick_time):
@@ -96,7 +96,7 @@ class Virus(object):
 
 
     def isContagious(self, person, envtime):
-        """
+        """ Check if person is contagious
         """
         isInfective = False
         if ((envtime - person.infected_at) <= self.infectivity_time) and person.infected:
