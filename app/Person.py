@@ -184,7 +184,7 @@ class Person(object):
     def isSick(self):
         """ Tells if the subject is sick (presenting symptoms)
         """        
-        return virus.isInIncubation(self, self.env.now)
+        return virus.isSick(self, self.env.now)
 
 
     def getInfector(self):
