@@ -3,13 +3,14 @@ import math
 import random
 
 from settings import config
+from app.simulation import data
 from .Virus import Virus
 
 
 DURATION = config['simulation']['duration']
 virus = Virus(**config['simulation']['virus'])
 
-data    = []    # monitored data
+
 people  = []    # list of every people
 outside = []    # list of outside people
 

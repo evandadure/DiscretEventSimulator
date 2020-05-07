@@ -1,15 +1,15 @@
 import simpy
 
 from settings import config
-from .analizing import *
-from .plots import *
+from .processing.analizing import *
+from .processing.plots import *
 
 
 
 def create_population(env):
     """
     """
-    from .Person import Person
+    from .simulation.Person import Person
 
     population = []
     for i in range(config['simulation']['population']):

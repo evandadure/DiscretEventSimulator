@@ -1,7 +1,7 @@
 import json
 import numpy as np
 
-from .Person import data
+from app.simulation import data
 
 
 
