@@ -1,16 +1,13 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
-import numpy as np
-from scipy import stats
-import random
 import numpy as np
 
 
 
 
 def courbe_evol(liste_abs,liste_ord,nom_abs,nom_ord):
+    """
+    Creating a 2D plot
+    """
     plt.plot(liste_abs, liste_ord)
     plt.xlabel(nom_abs)
     plt.ylabel(nom_ord)
@@ -18,6 +15,9 @@ def courbe_evol(liste_abs,liste_ord,nom_abs,nom_ord):
     plt.show()
 
 def courbe_evol_cumul(liste_abs,liste_ord,nom_abs,nom_ord):
+    """
+    Creating a cumulative 2D plot
+    """
     liste_ord = [sum(liste_ord[:i+1]) for i,nb in enumerate(liste_ord)]
     plt.plot(liste_abs, liste_ord)
     plt.xlabel(nom_abs)
@@ -26,6 +26,9 @@ def courbe_evol_cumul(liste_abs,liste_ord,nom_abs,nom_ord):
     plt.show()
 
 def pie_chart(labels,sizes,title):
+    """
+    Creating a pie chart with labels and 'sizes' being the % of space taken
+    """
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
     fig1, ax1 = plt.subplots()
     ax1.set_title(title, fontsize=14, fontweight='bold')
@@ -37,24 +40,6 @@ def pie_chart(labels,sizes,title):
     plt.show()
 
 def courbe_3d(liste_x,liste_y,liste_z,nom_x,nom_y,nom_z):
-    n_radii = 8
-    n_angles = 36
-
-    # Make radii and angles spaces (radius r=0 omitted to eliminate duplication).
-    radii = np.linspace(0.125, 1.0, n_radii)
-    angles = np.linspace(0, 2 * np.pi, n_angles, endpoint=False)
-
-    # Repeat all angles for each radius.
-    angles = np.repeat(angles[..., np.newaxis], n_radii, axis=1)
-
-    # Convert polar (radii, angles) coords to cartesian (x, y) coords.
-    # (0, 0) is manually added at this stage,  so there will be no duplicate
-    # points in the (x, y) plane.
-    # x = np.append(0, (radii * np.cos(angles)).flatten())
-    # y = np.append(0, (radii * np.sin(angles)).flatten())
-
-    # Compute z to make the pringle surface.
-    # z = np.sin(-x * y)
     x = np.asarray([float(i) for i in liste_x])
     y = np.asarray([float(i) for i in liste_y])
     z = np.asarray([float(i) for i in liste_z])
