@@ -17,7 +17,8 @@ def create_population(env):
             env, 
             name=i,
             **config['simulation']['people'], 
-            infected_rate=config['simulation']['infected_rate']
+            infected_rate=config['simulation']['infected_rate'],
+            mask_rate = config['simulation']['mask_rate']
         )
         population.append(p)
 

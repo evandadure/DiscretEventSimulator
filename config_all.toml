@@ -1,5 +1,5 @@
 # FILE INFORMATIONS
-title = "reduced TOML config file"
+title = "TOML config file"
 author = "Clement DECOOPMAN"
 
 
@@ -31,10 +31,59 @@ population = 2000      # total number of people in the environment
 infected_pop = 2        # numbre of infected people at the start    (We'll either choose this one or infected_pop)
 infected_rate = 0.01     # rate of infected people at the start      (We'll either choose this one or infected_rate)
 hc_rate = 0.2           # rate of healty carrier
-mask_rate = 0.5         # rate of people who wear a safety mask against the virus
+mask_rate = 0.7         # rate of people who wear a safety mask against the virus
 vaccination_rate = 0    # rate of people who have been vaccinated
 confinement = false     # enable confinement (true / false)
 nb_masks = 625          # base amount of masks available in each container/store
+
+    # AGE CATEGORIES 
+    # young
+    [[simulation.age_cat]]
+    type = "young"
+    rate = 0.3
+    # adult
+    [[simulation.age_cat]]
+    type = "adult"
+    rate = 0.5
+    # senior
+    [[simulation.age_cat]]
+    type = "senior"
+    rate = 0.2
+    # HEALTH CONDITION
+    # bad
+    [[simulation.health]]
+    type = "bad"
+    rate = 0.2
+    # ok
+    [[simulation.health]]
+    type = "ok"
+    rate = 0.3
+    # good
+    [[simulation.health]]
+    type = "good"
+    rate = 0.5
+
+    # JOB CATEGORIES
+    # medical
+    [[simulation.job_cat]]
+    type = "medical"            # type of job
+    mask_prio = 1               # priority on getting a mask in every containers
+    rate = 0.2                  # ratio among the total population
+    # road jobs
+    [[simulation.job_cat]]
+    type = "lorry driver"
+    mask_prio = 2
+    rate = 0.2
+    # artisan
+    [[simulation.job_cat]]
+    type = "artisan"
+    mask_prio = 3
+    rate = 0.3
+    # student
+    [[simulation.job_cat]]
+    type = "student"
+    mask_prio = 3
+    rate = 0.3
 
     # Virus
     [simulation.virus]
@@ -44,6 +93,7 @@ nb_masks = 625          # base amount of masks available in each container/store
     incubation = 33            # period in hours between infection and first appearance of symptoms
     infect_incr = false        # infection increased during incubation period (true / false)
     sick_time = 336            # period between the first appearance of symptoms and healing/death
+
     infectivity_time = 50    # period in hours during which the virus remains contagious
     immunity_time = 72       # period in hours during which the virus can't be transmitted
     incubation_rate = 1.3
@@ -54,3 +104,35 @@ nb_masks = 625          # base amount of masks available in each container/store
     trip_freq = [1, 60]          # number of times a person goes outside during the simulation cycle
     trip_duration = [1, 8]       # period of each trip in hours
     nb_meeting = [10, 20]         # interval of people met on every trip
+
+    # Vaccine
+    [simulation.vaccine]
+    efficiency = 1                      # efficiency ratio
+    seroconversion = 168                # period before vaccination become effective
+    name = "chloroquine"                # name of the vaccine
+    inventor = "Dr. Didier RAOULT"      # person who discovered it
+
+    # Masks
+    [[simulation.masks]]
+    type = "homemade"       # type of mask
+    efficiency = 0.5        # efficiency ratio
+    eff_period = 4          # period in hour before the mask become ineffective
+    rate = 0.6              # popularity among the population who wear masks
+
+    [[simulation.masks]]
+    type = "FFP1"
+    efficiency = 0.8
+    eff_period = 4
+    rate = 0
+
+    [[simulation.masks]]
+    type = "FFP2"
+    efficiency = 0.94
+    eff_period = 4
+    rate = 0.4
+
+    [[simulation.masks]]
+    type = "FFP3"
+    efficiency = 0.995
+    eff_period = 4
+    rate = 0

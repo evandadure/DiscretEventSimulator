@@ -26,7 +26,7 @@ class Person(object):
     """
     """
 
-    def __init__(self, env: simpy.Environment, name: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float) -> None:
+    def __init__(self, env: simpy.Environment, name: int, trip_freq: list, trip_duration: list, nb_meeting: list, infected_rate: float, mask_rate: float) -> None:
         """
         """
         # ATTRIBUTES
@@ -39,7 +39,7 @@ class Person(object):
         self.infected      = True if random.random() <= infected_rate else False    # Chance of being infected from start
         self.infector      = None
         self.infected_at   = 0
-        self.mask_on       = True if random.random() <= 0.5 else False
+        self.mask_on       = True if random.random() <= mask_rate else False
         self.dead          = False
 
         # INITIAL MONITORING
